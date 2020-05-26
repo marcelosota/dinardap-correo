@@ -11,6 +11,7 @@ import ec.gob.dinardap.correo.util.MailMessage;
  */
 @Local
 public interface MailServicio {
+	////revisar
 
 	/**
 	 * Metodo que coloca el mail al enviador.
