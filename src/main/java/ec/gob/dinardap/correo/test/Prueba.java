@@ -1,9 +1,15 @@
 package ec.gob.dinardap.correo.test;
 
-public class Prueba {
+import java.util.ArrayList;
+import java.util.List;
 
-	public static void main(String[] args) {
-		
-	}
+import javax.ejb.EJB;
+
+
+public class Prueba   {
+	
+	 
+
+	
 
 }

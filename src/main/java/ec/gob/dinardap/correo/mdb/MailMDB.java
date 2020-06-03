@@ -8,12 +8,12 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
+import javax.mail.AuthenticationFailedException;
+import javax.mail.MessagingException;
 
 import ec.gob.dinardap.correo.exception.MailException;
 import ec.gob.dinardap.correo.servicio.MailServicio;
 import ec.gob.dinardap.correo.util.MailMessage;
-
-
 
 /**
  * @author Daniel Cardenas
@@ -25,7 +25,7 @@ import ec.gob.dinardap.correo.util.MailMessage;
 		@ActivationConfigProperty(propertyName = "destination", propertyValue = "queue/MaildinardapQueue") })
 public class MailMDB implements MessageListener {
 	@EJB
-	private MailServicio mailService;    
+	private MailServicio mailService;
 
 	/**
 	 * @see javax.jms.MessageListener#onMessage(javax.jms.Message)
@@ -36,10 +36,14 @@ public class MailMDB implements MessageListener {
 			try {
 				MailMessage mm = (MailMessage) (((ObjectMessage) message).getObject());
 
-				mailService.sender(mm);
-			} catch (MailException e) {
-				e.printStackTrace();
+				mailService.sendMail(mm);
 			} catch (JMSException e) {
+				e.printStackTrace();
+			} catch (AuthenticationFailedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (MessagingException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

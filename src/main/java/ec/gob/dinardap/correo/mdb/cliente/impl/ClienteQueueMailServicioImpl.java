@@ -23,6 +23,7 @@ import ec.gob.dinardap.correo.util.MailMessage;
  * @author Daniel Cardenas
  * @version $1.0$
  */
+
 @Stateless(name = "ClienteQueueMailServicio")
 public class ClienteQueueMailServicioImpl implements ClienteQueueMailServicio {
 	@Resource(mappedName = "java:/ConnectionFactory")
@@ -31,6 +32,7 @@ public class ClienteQueueMailServicioImpl implements ClienteQueueMailServicio {
 	@Resource(mappedName = "java:/jms/queue/MaildinardapQueue")
 	private Queue queue;
 	
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -38,6 +40,7 @@ public class ClienteQueueMailServicioImpl implements ClienteQueueMailServicio {
 	 * com.pfponline.ejb.service.ClienteQueueMailServiceLocal#encolarMail(com
 	 * .pfponline.util.MailMessage)
 	 */
+	
 	public void encolarMail(MailMessage mmessage) {
 		Connection connection = null;
 		Session session = null;
@@ -69,3 +72,4 @@ public class ClienteQueueMailServicioImpl implements ClienteQueueMailServicio {
 	}
 
 }
+

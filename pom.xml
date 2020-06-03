@@ -18,7 +18,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
+				<version>3.8.0</version>
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
@@ -29,12 +29,13 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-install-plugin</artifactId>
+				<version>2.5.2</version>
 				<configuration>
 					<groupId>${project.groupId}</groupId>
 					<artifactId>${project.artifactId}</artifactId>
 					<version>${project.version}</version>
 					<packaging>jar</packaging>
-					<file>${basedir}/target/dinardap-correo-1.0-SNAPSHOT.jar</file>
+					<file>${basedir}/target/dinardap-correo.jar</file>
 					<generatePom>true</generatePom>
 				</configuration>
 				<executions>
