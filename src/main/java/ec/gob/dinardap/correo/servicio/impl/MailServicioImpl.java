@@ -64,6 +64,7 @@ public class MailServicioImpl implements MailServicio {
 				p.put("mail.smtp.from", message.getFrom());
 				p.put("mail.smtp.password", PASSWORD);
 				p.put("mail.smtp.port", PORT);
+				p.put("mail.smtp.starttls.enable", "false");
 			}
 
 			// Session mailSession = Session.getDefaultInstance(p);
