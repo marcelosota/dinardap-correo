@@ -1,22 +1,25 @@
 
-
 package ec.gob.dinardap.correo.servicio.impl;
 
 import java.io.File;
 import java.util.Map;
-import java.util.Properties;
-
-import javax.activation.DataHandler;
+import javax.mail.BodyPart;
+import javax.mail.Part;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
+import javax.activation.DataHandler;
+import java.io.UnsupportedEncodingException;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.mail.BodyPart;
+
+import javax.mail.AuthenticationFailedException;
 import javax.mail.Message;
-import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
-import javax.mail.Part;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -24,102 +27,78 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.mail.internet.MimeUtility;
 
 import ec.gob.dinardap.correo.constante.ParametroEnum;
 import ec.gob.dinardap.correo.servicio.MailServicio;
 import ec.gob.dinardap.correo.util.MailMessage;
 import ec.gob.dinardap.seguridad.servicio.ParametroServicio;
 
+
+
 @Stateless(name = "MailServicio")
 public class MailServicioImpl implements MailServicio {
+	
 	@EJB
 	ParametroServicio parameterService;
 
-	public void sender(MailMessage message) {
-		try {
+	public void sendMail(MailMessage message)
+			throws AuthenticationFailedException, MessagingException {
 
-			// PARAMETROS
-			String HOST = parameterService.findByPk(ParametroEnum.MAIL_HOST.toString()).getValor();
-			String PORT = parameterService.findByPk(ParametroEnum.MAIL_PORT.toString()).getValor();
-			String PROTOCOL = parameterService.findByPk(ParametroEnum.MAIL_PROTOCOL.toString()).getValor();
-			final String USERNAME = message.getUsername();
-			final String PASSWORD = message.getPassword();
+		// PARAMETROS
+		String HOST = parameterService.findByPk(ParametroEnum.MAIL_HOST.toString()).getValor();
+		String PORT = parameterService.findByPk(ParametroEnum.MAIL_PORT.toString()).getValor();
+		String PROTOCOL = parameterService.findByPk(ParametroEnum.MAIL_PROTOCOL.toString()).getValor();		
+		final String USERNAME = message.getUsername();
+		final String PASSWORD = message.getPassword();		
 
-			Properties p = new Properties();
-			// GMAIL
-			if (HOST.equals("smtp.gmail.com")) {
-				p.put("mail.smtp.host", HOST);
-				p.put("mail.smtp.socketFactory.port", PORT);
-				p.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-				p.put("mail.smtp.auth", true);
-				p.put("mail.smtp.from", message.getFrom());
-				p.put("mail.smtp.port", PORT);
-				p.put("mail.transport.protocol", PROTOCOL);
-			} else {
-				// NO GMAIL
-				p.put("mail.smtp.auth", true);
-				p.put("mail.transport.protocol", PROTOCOL);
-				p.put("mail.smtp.user", USERNAME);
-				p.put("mail.smtp.host", HOST);
-				p.put("mail.smtp.from", message.getFrom());
-				p.put("mail.smtp.password", PASSWORD);
-				p.put("mail.smtp.port", PORT);
-				p.put("mail.smtp.starttls.enable", "false");
+		Properties p = new Properties();
+		p.put("mail.smtp.host", HOST);
+		p.put("mail.smtp.auth", "true");
+		p.put("mail.smtp.starttls.enable", "false");
+		p.put("mail.smtp.port", PORT);
+		p.put("mail.transport.protocol", PROTOCOL);
+
+		Session session = Session.getInstance(p, new javax.mail.Authenticator() {
+			@Override
+			protected PasswordAuthentication getPasswordAuthentication() {
+				return new PasswordAuthentication(USERNAME, PASSWORD);
 			}
+		});
 
-			// Session mailSession = Session.getDefaultInstance(p);
-			Session mailSession = Session.getInstance(p,
-					new javax.mail.Authenticator() {
-						protected PasswordAuthentication getPasswordAuthentication() {
-							return new PasswordAuthentication(USERNAME, PASSWORD);
-						}
-					});
-
-			mailSession.setDebug(true);
-			Transport transport = mailSession.getTransport();
-
-			MimeMessage mimeMessage = new MimeMessage(mailSession);
-			mimeMessage.setSubject(message.getSubject(), "UTF-8");
-			
-			Multipart multipart = new MimeMultipart();
-	        MimeBodyPart htmlPart = new MimeBodyPart();
-	        
-			
-
-			// tiende adjunto
-
-			if (message.isTieneAdjunto()) {
-				mimeMessage = messageConAtachment(message, mimeMessage);
-			} else {
-				htmlPart.setContent(message.getText(), "text/html;charset=UTF-8");
-		        multipart.addBodyPart(htmlPart);
-		        mimeMessage.setContent(multipart); 
-
-			}
-			for (String to : message.getTo()) {
-				System.out.println("to:" + to);
-				mimeMessage.addRecipient(RecipientType.TO, new InternetAddress(to));
-			}
-
-			InternetAddress from = new InternetAddress(message.getFrom());
-			mimeMessage.setFrom(from);
-
-			transport.connect();
-			// (SMTP_HOST_NAME, SMTP_HOST_PORT, SMTP_AUTH_USER, SMTP_AUTH_PWD);
-			transport.sendMessage(mimeMessage,
-					mimeMessage.getRecipients(Message.RecipientType.TO));
-
-			transport.close();
-
-		} catch (MessagingException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
+		Message messa = new MimeMessage(session);
+		messa.setFrom(new InternetAddress(message.getFrom()));
+		//
+		for (String to : message.getTo()) {
+			System.out.println("to:" + to);
+			messa.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
 		}
+		
+		try {
+			if (message.getTo() != null && ! message.getTo().isEmpty()) {			   
+				messa.setSubject(MimeUtility.encodeText(message.getSubject(), "UTF-8", "Q"));
+				Multipart multipartes = new MimeMultipart();
+				MimeBodyPart htmlPart = new MimeBodyPart();
 
+				if (message.isTieneAdjunto()) {
+					messa = messageConAtachment(message,messa);
+				} else {
+
+				htmlPart.setContent(message.getText(), "text/html; charset=utf-8");
+				multipartes.addBodyPart(htmlPart);
+				messa.setContent(multipartes);
+				}
+				Transport.send(messa);
+			}
+		} catch (AuthenticationFailedException e) {
+			throw e;
+		} catch (MessagingException ex) {
+			throw ex;
+		} catch (UnsupportedEncodingException ex) {
+			Logger.getLogger(MailServicio.class.getName()).log(Level.SEVERE, null, ex);
+		}
 	}
-
-	private MimeMessage messageConAtachment(MailMessage message, MimeMessage msj) {
+	private Message messageConAtachment(MailMessage message,Message msj) {
 
 		try {
 
