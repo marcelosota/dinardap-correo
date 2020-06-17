@@ -26,7 +26,7 @@ import ec.gob.dinardap.correo.util.MailMessage;
 
 @Stateless(name = "ClienteQueueMailServicio")
 public class ClienteQueueMailServicioImpl implements ClienteQueueMailServicio {
-	/*@Resource(mappedName = "java:/ConnectionFactory")
+	@Resource(mappedName = "java:/ConnectionFactory")
 	private ConnectionFactory connectionFactory;
 
 	@Resource(mappedName = "java:/jms/queue/MaildinardapQueue")
@@ -42,7 +42,7 @@ public class ClienteQueueMailServicioImpl implements ClienteQueueMailServicio {
 	 */
 	
 	public void encolarMail(MailMessage mmessage) {
-		/*Connection connection = null;
+		Connection connection = null;
 		Session session = null;
 
 		try {
@@ -68,7 +68,7 @@ public class ClienteQueueMailServicioImpl implements ClienteQueueMailServicio {
 					e.printStackTrace();
 				}
 			}
-		}*/
+		}
 	}
 
 }

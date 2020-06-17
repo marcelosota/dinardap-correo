@@ -4,7 +4,6 @@ import javax.ejb.Local;
 import javax.mail.AuthenticationFailedException;
 import javax.mail.MessagingException;
 
-import ec.gob.dinardap.correo.exception.MailException;
 import ec.gob.dinardap.correo.util.MailMessage;
 
 /**
