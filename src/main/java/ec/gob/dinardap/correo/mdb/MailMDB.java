@@ -21,15 +21,19 @@ import ec.gob.dinardap.correo.util.MailMessage;
  */
 
 @MessageDriven(activationConfig = {
-		@ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
-		@ActivationConfigProperty(propertyName = "destination", propertyValue = "queue/MaildinardapQueue") })
-public class MailMDB implements MessageListener {
+@ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
+@ActivationConfigProperty(propertyName = "destination", propertyValue = "queue/MaildinardapQueue"), 
+@ActivationConfigProperty(propertyName = "transactionTimeout", propertyValue="500") })
+
+public class MailMDB implements MessageListener{
+ 
 	@EJB
 	private MailServicio mailService;
 
 	/**
 	 * @see javax.jms.MessageListener#onMessage(javax.jms.Message)
 	 */
+	
 	public void onMessage(Message message) {
 		System.out.println("Se procesa el elemento encolado...");
 		if (message instanceof ObjectMessage) {
@@ -49,5 +53,6 @@ public class MailMDB implements MessageListener {
 		}
 
 	}
+	
 
 }
