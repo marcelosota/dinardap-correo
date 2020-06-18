@@ -23,7 +23,7 @@ import ec.gob.dinardap.correo.util.MailMessage;
 @MessageDriven(activationConfig = {
 @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
 @ActivationConfigProperty(propertyName = "destination", propertyValue = "queue/MaildinardapQueue"), 
-@ActivationConfigProperty(propertyName = "transactionTimeout", propertyValue="500") })
+@ActivationConfigProperty(propertyName = "transactionTimeout", propertyValue="60") })
 
 public class MailMDB implements MessageListener{
  
