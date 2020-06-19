@@ -19,9 +19,9 @@ import ec.gob.dinardap.correo.util.MailMessage;
  * @version $Revision: 1.2 $
  */
 
-@MessageDriven(activationConfig = {
-		@ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
-		@ActivationConfigProperty(propertyName = "destination", propertyValue = "queue/MaildinardapQueue") })
+//@MessageDriven(activationConfig = {
+//		@ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
+//		@ActivationConfigProperty(propertyName = "destination", propertyValue = "queue/MaildinardapQueue") })
 public class MailMDB implements MessageListener {
 
 	@EJB
