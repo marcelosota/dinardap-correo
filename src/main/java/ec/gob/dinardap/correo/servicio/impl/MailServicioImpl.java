@@ -49,15 +49,16 @@ public class MailServicioImpl implements MailServicio {
 		String HOST = parameterService.findByPk(ParametroEnum.MAIL_HOST.toString()).getValor();
 		String PORT = parameterService.findByPk(ParametroEnum.MAIL_PORT.toString()).getValor();
 		String PROTOCOL = parameterService.findByPk(ParametroEnum.MAIL_PROTOCOL.toString()).getValor();		
+
 		final String USERNAME = message.getUsername();
 		final String PASSWORD = message.getPassword();		
 
 		Properties p = new Properties();
 		p.put("mail.smtp.host", HOST);
-		p.put("mail.smtp.auth", "true");
-		p.put("mail.smtp.starttls.enable", "false");
 		p.put("mail.smtp.port", PORT);
 		p.put("mail.transport.protocol", PROTOCOL);
+		p.put("mail.smtp.auth", "true");
+		p.put("mail.smtp.starttls.enable", "false");
 
 		Session session = Session.getInstance(p, new javax.mail.Authenticator() {
 			@Override
