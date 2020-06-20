@@ -46,11 +46,11 @@ public class MailServicioImpl implements MailServicio {
 			throws AuthenticationFailedException, MessagingException {
 
 		// PARAMETROS
-		String HOST =
+		String HOST = 
 		parameterService.findByPk(ParametroEnum.MAIL_HOST.toString()).getValor();
-		String PORT =
+		String PORT = 
 		parameterService.findByPk(ParametroEnum.MAIL_PORT.toString()).getValor();
-		String PROTOCOL =
+		String PROTOCOL = 
 		parameterService.findByPk(ParametroEnum.MAIL_PROTOCOL.toString()).getValor();		
 		final String USERNAME = message.getUsername();
 		final String PASSWORD = message.getPassword();		
